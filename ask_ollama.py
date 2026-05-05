@@ -1,4 +1,4 @@
-teimport os
+import os
 import requests
 import json
 import argparse
