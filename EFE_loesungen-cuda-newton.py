@@ -1,11 +1,19 @@
-import cupy as cp
+try:
+    import cupy as cp
+    GPU_AVAILABLE = True
+    print("GPU (CuPy) detected and will be used")
+except ImportError:
+    import numpy as cp
+    GPU_AVAILABLE = False
+    print("GPU not available, using CPU (NumPy) instead")
+
 import numpy as np
 import time
 import matplotlib.pyplot as plt
 
-# Funktion: z.B. Potenzialberechnung auf GPU
+# Funktion: z.B. Potenzialberechnung auf GPU/CPU
 def compute_potential_on_gpu(grid_x, grid_y, mass_density, a, b):
-    # Erzeuge auf GPU
+    # Erzeuge auf GPU oder CPU
     X_gpu = cp.asarray(grid_x)
     Y_gpu = cp.asarray(grid_y)
     # Beispiel: Newtonsche Potentialberechnung (vereinfachte Annäherung)
@@ -32,12 +40,14 @@ if __name__ == "__main__":
     potential = compute_potential_on_gpu(X, Y, mass_density, a, b)
 
     duration = time.time() - start_time
-    print(f"Potentialberechnung auf GPU in {duration:.4f} Sekunden")
+    device_type = "GPU" if GPU_AVAILABLE else "CPU"
+    print(f"Potentialberechnung auf {device_type} in {duration:.4f} Sekunden")
 
-    # Visualisierung
-    plt.imshow(cp.asnumpy(potential), extent=(-a*1.2, a*1.2, -b*1.2, b*1.2))
+    # Visualisierung - convert to numpy array if needed
+    potential_np = cp.asnumpy(potential) if GPU_AVAILABLE else potential
+    plt.imshow(potential_np, extent=(-a*1.2, a*1.2, -b*1.2, b*1.2))
     plt.colorbar(label='Potential')
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.title('Vereinfachte Potentialsimulation (GPU)')
+    plt.title(f'Vereinfachte Potentialsimulation ({device_type})')
     plt.show()

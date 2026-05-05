@@ -34,7 +34,7 @@ def execute_command_thread(command, window):
 
 # Define the layout
 layout = [
-    [sg.Text('', size=(20, 1), font=("Helvetica", 48), key='-CLOCK-')],
+    [sg.Button('Open File', font=("Helvetica", 16)), sg.Text('', size=(20, 1), font=("Helvetica", 48), key='-CLOCK-')],
     [sg.InputText('', size=(60, 1), font=("Courier", 12), key='-COMMAND_INPUT-'), sg.Button('Run', font=("Helvetica", 16))],
     [sg.Multiline('', size=(80, 20), font=("Courier", 12), key='-OUTPUT-', disabled=True, autoscroll=True, expand_x=True, expand_y=True)],
     [sg.Button('Exit', font=("Helvetica", 16))]
@@ -51,6 +51,10 @@ while True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED or event == 'Exit':
         break
+    elif event == 'Open File':
+        file_path = sg.popup_get_file('Select a file to open', no_window=True)
+        if file_path:
+            window['-OUTPUT-'].update(f'File selected: {file_path}\n', append=True)
     elif event == 'Run':
         command = values['-COMMAND_INPUT-']
         if command:
