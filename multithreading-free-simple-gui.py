@@ -1,4 +1,4 @@
-import freesimplegui as sg
+import FreeSimpleGUI as sg
 import time
 import threading
 import subprocess
